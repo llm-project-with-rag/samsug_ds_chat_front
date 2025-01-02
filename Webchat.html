@@ -67,6 +67,22 @@
       align-self: flex-start;
       background-color: #e0e0e0;
       color: black;
+      display: flex;
+      align-items: center;
+    }
+
+    .botprofile {
+      display: flex;
+      text-align: center;
+    }
+
+    .bot-profile {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+      background-size: cover;
+      background-position: center;
     }
 
     .chat-input {
@@ -90,18 +106,25 @@
 
     .chat-input button {
       padding: 10px 15px;
-      background-color: #007bff;
+      background-color: #ddd; /* 비활성 상태 회색 */
       color: white;
       border: none;
       border-radius: 5px;
-      cursor: pointer;
+      cursor: not-allowed; /* 커서 변경 */
       font-size: 1em;
       margin-left: 10px;
-			margin-right: 20px;
+      margin-right: 20px;
+      pointer-events: none; /* 마우스 이벤트 방지 */
+    }
+
+    .chat-input button.enabled {
+      background-color: #007bff; /* 활성 상태 파란색 */
+      cursor: pointer;
+      pointer-events: all;
     }
 
     .chat-input button:hover {
-      background-color: #0056b3;
+      background-color: #007bff; /* 활성 상태 변경 */
     }
 
     .loading {
@@ -114,6 +137,15 @@
 
     .loading.show {
       display: block;
+    }
+
+    .loading-buffering {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto;
+      background-image: url('loading-buffering.gif');
+      background-size: cover;
+      background-repeat: no-repeat;
     }
   </style>
 </head>
@@ -128,20 +160,21 @@
     <div>
       <form onsubmit="return sendMessage()" class="chat-input">
         <input type="text" id="userInput" placeholder="메시지를 입력해주세요" />
-        <button>확인</button>
+        <button type="submit" class="enabled">확인</button> <!-- 비활성화에서 활성화로 변경 -->
       </form>
     </div>
-    <div id="loading" class="loading">로딩 중...</div>
   </div>
 
   <script>
     function sendMessage() {
       const chatMessages = document.getElementById('chatMessages');
       const userInput = document.getElementById('userInput');
-      const loading = document.getElementById('loading');
+      const submitButton = document.querySelector('.chat-input button');
 
       // Show loading animation
-      loading.classList.add('show');
+      submitButton.classList.add('disabled');
+      userInput.disabled = true;
+      userInput.placeholder = '답변 중...';
 
       // Get user message
       const userMessage = userInput.value.trim();
@@ -153,21 +186,48 @@
       userMessageElement.textContent = userMessage;
       chatMessages.appendChild(userMessageElement);
 
+      const botprofile = document.createElement('div');
+      botprofile.className = 'botprofile';
+
+      const botProfileElement = document.createElement('img');
+botProfileElement.className = 'bot-profile';
+botProfileElement.src = 'botprofile.png'; // 프로필 사진 사용
+botprofile.appendChild(botProfileElement);
+
+      const botNameElement = document.createElement('span'); // 봇 이름 추가
+      botNameElement.textContent = '찰떡 커리어 챗봇';
+      botprofile.appendChild(botNameElement);
+
+      chatMessages.appendChild(botprofile);
+
+      const userLoading = document.createElement('div');
+      userLoading.className = 'loading-buffering';
+      chatMessages.appendChild(userLoading);
+
       // Clear input field
       userInput.value = '';
 
       // Simulate bot response
       generateBotResponse(userMessage).then(botResponse => {
+        // Remove loading indicator and display bot message
+        submitButton.classList.remove('disabled');
+        submitButton.classList.add('enabled');
+        userInput.disabled = false;
+        userInput.placeholder = '메시지를 입력해주세요';
+
         const botMessageElement = document.createElement('div');
         botMessageElement.className = 'message bot';
-        botMessageElement.textContent = botResponse;
-        chatMessages.appendChild(botMessageElement);
+        
+        const botTextElement = document.createElement('div');
+        botTextElement.textContent = botResponse;
+        botMessageElement.appendChild(botTextElement);
 
-        // Hide loading animation
-        loading.classList.remove('show');
+        chatMessages.appendChild(botMessageElement);
 
         // Scroll to the bottom
         chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        chatMessages.removeChild(userLoading);
       });
 
       return false;
