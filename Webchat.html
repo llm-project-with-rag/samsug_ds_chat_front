@@ -219,8 +219,8 @@ botprofile.appendChild(botProfileElement);
         botMessageElement.className = 'message bot';
         
         const botTextElement = document.createElement('p');
-        botTextElement.textContent = botResponse;
-        botMessageElement.appendChild(botTextElement);
+botTextElement.innerHTML = botResponse; // innerHTML로 HTML 해석
+botMessageElement.appendChild(botTextElement);
 
         chatMessages.appendChild(botMessageElement);
 
