@@ -103,6 +103,18 @@
     .chat-input button:hover {
       background-color: #0056b3;
     }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 10px;
+      font-size: 1em;
+      color: #007bff;
+    }
+
+    .loading.show {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -119,12 +131,17 @@
         <button>확인</button>
       </form>
     </div>
+    <div id="loading" class="loading">로딩 중...</div>
   </div>
 
   <script>
     function sendMessage() {
       const chatMessages = document.getElementById('chatMessages');
       const userInput = document.getElementById('userInput');
+      const loading = document.getElementById('loading');
+
+      // Show loading animation
+      loading.classList.add('show');
 
       // Get user message
       const userMessage = userInput.value.trim();
@@ -140,23 +157,46 @@
       userInput.value = '';
 
       // Simulate bot response
-      const botResponse = generateBotResponse(userMessage);
-      const botMessageElement = document.createElement('div');
-      botMessageElement.className = 'message bot';
-      botMessageElement.textContent = botResponse;
-      chatMessages.appendChild(botMessageElement);
+      generateBotResponse(userMessage).then(botResponse => {
+        const botMessageElement = document.createElement('div');
+        botMessageElement.className = 'message bot';
+        botMessageElement.textContent = botResponse;
+        chatMessages.appendChild(botMessageElement);
 
-      // Scroll to the bottom
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+        // Hide loading animation
+        loading.classList.remove('show');
+
+        // Scroll to the bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      });
+
       return false;
     }
 
-		// 해당 위치에서 챗봇의 내용을 수령할 것.
-    function generateBotResponse(userMessage) {
-      // Basic bot response logic
-      if (userMessage.toLowerCase().includes('hello')) {
-        return 'Hello! How can I assist you today?';
-      } else {
+    async function generateBotResponse(userMessage) {
+      const apiUrl = 'http://localhost:8000/chat'; // API URL
+      const data = {
+        message: userMessage
+      };
+
+      try {
+        // POST 요청 보내기
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+
+        const result = await response.json(); // 응답 데이터 JSON으로 파싱
+        return result.reply; // reply 값 반환
+      } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
         return 'I am here to help!';
       }
     }
