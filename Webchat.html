@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot UI</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .chatbot-modal {
+      position: relative;
+      width: 100%;
+      height: 600px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .chat-header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 1.2em;
+      z-index: 10;
+    }
+
+    .chat-messages {
+      position: absolute;
+      top: 60px;
+      bottom: 60px;
+      left: 10px;
+      right: 10px;
+      padding: 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 8px;
+      max-width: 70%;
+      word-wrap: break-word; 
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background-color: #007bff;
+      color: white;
+    }
+
+    .message.bot {
+      align-self: flex-start;
+      background-color: #e0e0e0;
+      color: black;
+    }
+
+    .chat-input {
+      display: flex;
+      justify-content: space-between;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-top: 1px solid #ddd;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+
+    .chat-input button {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-left: 10px;
+			margin-right: 20px;
+    }
+
+    .chat-input button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="chatbot-modal">
+    <div class="chat-header">
+      삼성 커리어스 챗봇
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <!-- Messages will appear here -->
+    </div>
+    <div>
+      <form onsubmit="return sendMessage()" class="chat-input">
+        <input type="text" id="userInput" placeholder="메시지를 입력해주세요" />
+        <button>확인</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const chatMessages = document.getElementById('chatMessages');
+      const userInput = document.getElementById('userInput');
+
+      // Get user message
+      const userMessage = userInput.value.trim();
+      if (!userMessage) return false;
+
+      // Add user message to chat
+      const userMessageElement = document.createElement('div');
+      userMessageElement.className = 'message user';
+      userMessageElement.textContent = userMessage;
+      chatMessages.appendChild(userMessageElement);
+
+      // Clear input field
+      userInput.value = '';
+
+      // Simulate bot response
+      const botResponse = generateBotResponse(userMessage);
+      const botMessageElement = document.createElement('div');
+      botMessageElement.className = 'message bot';
+      botMessageElement.textContent = botResponse;
+      chatMessages.appendChild(botMessageElement);
+
+      // Scroll to the bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return false;
+    }
+
+		// 해당 위치에서 챗봇의 내용을 수령할 것.
+    function generateBotResponse(userMessage) {
+      // Basic bot response logic
+      if (userMessage.toLowerCase().includes('hello')) {
+        return 'Hello! How can I assist you today?';
+      } else {
+        return 'I am here to help!';
+      }
+    }
+  </script>
+</body>
+</html>

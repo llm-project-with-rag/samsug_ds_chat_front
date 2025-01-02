@@ -1,0 +1,1 @@
+window.webchat = {};window.webchat.context = '/v2/samsungcareers';window.webchat.apiUri = '/api';window.webchat.socketUri = '/webchat-server';

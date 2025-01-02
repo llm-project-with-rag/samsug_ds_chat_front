@@ -1,0 +1,31 @@
+window.onload = function() {
+  var agent = navigator.userAgent.toLowerCase();
+  if(agent.indexOf("msie") !== -1 || /MSIE 9/i.test(navigator.userAgent) || /rv:11.0/i.test(navigator.userAgent)) {
+      document.querySelector("body").classList.add("ie");
+      // console.log('인터넷 익스플로러 브라우저');
+      // alert('ie 브라우저는 지원하지 않습니다. \n\n지원 브라우저:\nEdge, Chrome, Opera, Firefox, Safari,\n그 외 Chrome 기반 브라우저');
+      
+      var message =
+        '<div class="browsers-guide-wrap"> \
+          <div class="guide-inner"> \
+              <img src="https://britywebchat.s3.ap-northeast-2.amazonaws.com/hrd/img_SC_character_sorry.gif" class="guide-img" /> \
+              <div class="text-area"> \
+                  <strong>삼성 커리어스 챗봇은 ie 에서<br>서비스가 되지 않습니다.</strong> \
+                  <p>다른 브라우저를 이용해주세요.</p> \
+              </div> \
+              <ul class="btn-wrap"> \
+                  <li> \
+                  <button type="button" onclick="goEdge()"> \
+                      <img src="https://britywebchat.s3.ap-northeast-2.amazonaws.com/hrd/ico_edge.png" class="icon"> \
+                      <span>Edge에서 챗봇 이용하기</span> \
+                  </button> \
+                  </li> \
+              </ul> \
+          </div> \
+      </div>';
+      document.getElementById("app").innerHTML = message;
+  };
+}
+function goEdge() {
+  window.location = 'microsoft-edge:' + window.location.href
+}

@@ -1,0 +1,8 @@
+function setFavicons(icon){
+    let headTitle = document.querySelector('head');
+    let setFavicon = document.createElement('link');
+    setFavicon.setAttribute('rel','shortcut icon');
+    setFavicon.setAttribute('href', icon);
+    headTitle.appendChild(setFavicon);
+}
+setFavicons('https://britywebchat.s3.ap-northeast-2.amazonaws.com/hrd/img_hr_dt_character.png');
